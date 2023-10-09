@@ -2,12 +2,14 @@
   <div class="body">
     <div class="tabla">
       <h1>Tabla</h1>
+      <button>Añadir</button>
       <table>
         <thead>
           <tr>
             <th>Vehiculo</th>
             <th>Numasientos</th>
             <th>Horarios</th>
+            <th>Opciones</th>
           </tr>
         </thead>
         <tbody>
@@ -15,6 +17,8 @@
             <td>{{ dato.numero_asiento }}</td>
             <td>{{ dato.vehiculo }}</td>
             <td>{{ dato.horario }}</td>
+            <td> <button> eliminar</button>
+            <button>editar </button></td>
           </tr>
         </tbody>
       </table>
