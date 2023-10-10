@@ -1,83 +1,86 @@
 <template>
   <div class="body">
     <div class="tabla">
-      <h1>Tabla</h1>
-      <button>Añadir</button>
-      <table>
-        <thead>
-          <tr>
-            <th>Vehiculo</th>
-            <th>Numasientos</th>
-            <th>Horarios</th>
-            <th>Opciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(dato, index) in guardardatos" :key="index">
-            <td>{{ dato.numero_asiento }}</td>
-            <td>{{ dato.vehiculo }}</td>
-            <td>{{ dato.horario }}</td>
-            <td> <button> eliminar</button>
-            <button>editar </button></td>
-          </tr>
-        </tbody>
-      </table>
+      <q-table
+        title="Tabla"
+        :rows="guardardatos"
+        :columns="columns"
+        row-key="numero_asiento"
+      />
     </div>
   </div>
 </template>
-  
 
 <script setup>
-import { ref } from 'vue';
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-let guardardatos = ref([])
+const guardardatos = ref([]);
+const columns = [
+  {
+    name: 'vehiculo',
+    required: true,
+    label: 'Vehiculo',
+    align: 'left',
+    field: 'vehiculo',
+    sortable: true
+  },
+  {
+    name: 'numero_asiento',
+    label: 'Numasientos',
+    field: 'numero_asiento',
+    sortable: true
+  },
+  {
+    name: 'horario',
+    label: 'Horarios',
+    field: 'horario',
+    sortable: true
+  },
+  {
+    name: 'opciones',
+    label: 'Opciones',
+    field: 'opciones'
+  }
+];
 
 async function ObtenerDatos() {
-  const response = await axios.get(`https://transporte-0ydp.onrender.com/api/transporte/transbusca`);
-  const data= response.data
-  data.transporte.forEach((transporte) => {
-    guardardatos.value.push({
+  try {
+    const response = await axios.get('https://transporte-0ydp.onrender.com/api/transporte/transbusca');
+    guardardatos.value = response.data.transporte.map(transporte => ({
       numero_asiento: transporte.NumAsientos,
       vehiculo: transporte.Vehiculo,
-      horario: transporte.horario
-    });
-  })
-
-
-
-  console.log(response.data);
+      horario: transporte.horario,
+      opciones: '<button @click="eliminarFila">Eliminar</button> <button @click="editarFila">Editar</button>'
+    }));
+  } catch (error) {
+    console.error('Error al obtener datos:', error);
+  }
 }
 
 onMounted(() => {
-  ObtenerDatos()
-})
-
+  ObtenerDatos();
+});
 
 </script>
+
 
 
 <style scoped>
 .body {
   display: flex;
 
-
-
-
-
-
   flex-direction: column;
   align-items: center;
   text-align: center;
   height: 100vh;
-  background-color: #a3ffff;
+  background-color: #ffffff;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
   color: rgba(0, 0, 0, 0.87);
-  font-synthesis: none;
+  /* font-synthesis: none; */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -96,6 +99,7 @@ onMounted(() => {
   border-radius: 10px;
   border: 5px solid black;
   padding: 20px;
+  margin-top: 10%;
   background-color: rgb(255, 255, 255);
 }
 
@@ -120,7 +124,7 @@ td {
 }
 
 th {
-  background-color: rgb(244, 240, 14);
+  background-color: rgb(119, 119, 119);
 }
 
 button {
